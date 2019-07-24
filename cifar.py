@@ -46,6 +46,8 @@ best_acc = 0  # best test accuracy
 start_epoch = 0  # start from epoch 0 or last checkpoint epoch
 
 
+
+
 # Random seed
 random.seed(args.manualSeed)
 torch.manual_seed(args.manualSeed)
@@ -120,7 +122,7 @@ def train(epoch):
     train_loss = 0
     correct = 0
     total = 0
-
+    g_lr = str(optimizer.param_groups[0]['lr'])+'\t'
 
 
     for batch_idx, (inputs, targets) in enumerate(trainloader):
@@ -139,9 +141,14 @@ def train(epoch):
         progress_bar(batch_idx, len(trainloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
             % (train_loss/(batch_idx+1), 100.*correct/total, correct, total))
 
-    file_path='../records/cifar100/cifar_' + str(args.cifar) + '_' +args.netName+'_train.txt'
-    record_str=str(epoch)+'\t'+"%.3f"%(train_loss/(batch_idx+1))+'\t'+"%.3f"%(100.*correct/total)+'\n'
-    write_record(file_path,record_str)
+    g_train_acc = "%.3f"%(100.*correct/total)+'\t'
+    g_train_loss = "%.3f"%(train_loss/(batch_idx+1))+'\t'
+    return g_lr,g_train_loss,g_train_acc
+
+    # file_path='../records/cifar100/cifar_' + str(args.cifar) + '_' +args.netName+'_train.txt'
+    # record_str=str(epoch)+'\t'+"%.3f"%(train_loss/(batch_idx+1))+'\t'+"%.3f"%(100.*correct/total)+'\n'
+    # write_record(file_path,record_str)
+
 
 
 def test(epoch):
@@ -164,10 +171,12 @@ def test(epoch):
             progress_bar(batch_idx, len(testloader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
                 % (test_loss/(batch_idx+1), 100.*correct/total, correct, total))
 
-    file_path = '../records/cifar100/cifar_' + str(args.cifar) + '_' +args.netName+ '_test.txt'
-    record_str = str(epoch) + '\t' + "%.3f" % (test_loss / (batch_idx + 1)) + '\t' + "%.3f" % (
-                100. * correct / total) + '\n'
-    write_record(file_path, record_str)
+    g_test_acc = "%.3f" % (100. * correct / total)+'\t'
+    g_test_loss = "%.3f" % (test_loss / (batch_idx + 1))+'\t'
+    # file_path = '../records/cifar100/cifar_' + str(args.cifar) + '_' +args.netName+ '_test.txt'
+    # record_str = str(epoch) + '\t' + "%.3f" % (test_loss / (batch_idx + 1)) + '\t' + "%.3f" % (
+    #             100. * correct / total) + '\n'
+    # write_record(file_path, record_str)
 
     # Save checkpoint.
     acc = 100.*correct/total
@@ -184,10 +193,19 @@ def test(epoch):
         torch.save(state, save_path)
         best_acc = acc
 
+    return g_test_loss,g_test_acc
+
+
+
+file_path='../records/cifar100/cifar_' + str(args.cifar) + '_' +args.netName+'.txt'
+record_str='Epoch'+'\t'+'lr'+'\t'+'Train_loss'+'\t'+'Train_acc'+'\t'+'Test_loss'+'\t'+'Test_acc'+'\t'+'\n'
+write_record(file_path, record_str)
 
 for epoch in range(start_epoch, start_epoch+args.es):
-    train(epoch)
-    test(epoch)
+    g_lr,g_train_loss,g_train_acc = train(epoch)
+    g_test_loss,g_test_acc = test(epoch)
+    record_str = str(epoch)+'\t'+g_lr+g_train_loss+g_train_acc+g_test_loss+g_test_acc+'\n'
+    write_record(file_path, record_str)
 
 
 # write statistics to files

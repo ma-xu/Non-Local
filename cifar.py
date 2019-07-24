@@ -122,7 +122,7 @@ def train(epoch):
     train_loss = 0
     correct = 0
     total = 0
-    g_lr = str(optimizer.param_groups[0]['lr'])+'\t'
+    g_lr = "%.6f"%(optimizer.param_groups[0]['lr'])+'\t'
 
 
     for batch_idx, (inputs, targets) in enumerate(trainloader):

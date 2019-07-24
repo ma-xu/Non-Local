@@ -310,7 +310,7 @@ def demo():
     y = net(torch.randn(2,3,32,32))
     print(y.size())
 
-demo()
+# demo()
 
 def demoGC():
     gcBlock = ContextMULBlock2d(channel=64)
@@ -318,4 +318,4 @@ def demoGC():
     print(gcBlock(torch.randn(2,64,32,32)).size())
 
 
-demoGC()
+# demoGC()

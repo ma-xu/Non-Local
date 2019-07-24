@@ -16,7 +16,7 @@ import math
 
 
 
-__all__ = ['resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152']
+__all__ = ['gc_resnet18', 'gc_resnet34', 'gc_resnet50', 'gc_resnet101', 'gc_resnet152']
 
 #################################################
 def constant_init(module, val, bias=0):
@@ -257,7 +257,7 @@ class ResNet(nn.Module):
         return x
 
 
-def resnet18(pretrained=False, **kwargs):
+def gc_resnet18(pretrained=False, **kwargs):
     """Constructs a ResNet-18 model.
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
@@ -266,7 +266,7 @@ def resnet18(pretrained=False, **kwargs):
     return model
 
 
-def resnet34(pretrained=False, **kwargs):
+def gc_resnet34(pretrained=False, **kwargs):
     """Constructs a ResNet-34 model.
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
@@ -275,7 +275,7 @@ def resnet34(pretrained=False, **kwargs):
     return model
 
 
-def resnet50(pretrained=False, **kwargs):
+def gc_resnet50(pretrained=False, **kwargs):
     """Constructs a ResNet-50 model.
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
@@ -284,7 +284,7 @@ def resnet50(pretrained=False, **kwargs):
     return model
 
 
-def resnet101(pretrained=False, **kwargs):
+def gc_resnet101(pretrained=False, **kwargs):
     """Constructs a ResNet-101 model.
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
@@ -293,7 +293,7 @@ def resnet101(pretrained=False, **kwargs):
     return model
 
 
-def resnet152(pretrained=False, **kwargs):
+def gc_resnet152(pretrained=False, **kwargs):
     """Constructs a ResNet-152 model.
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
@@ -303,11 +303,11 @@ def resnet152(pretrained=False, **kwargs):
 
 
 def demo():
-    net = resnet18(num_classes=100)
+    net = gc_resnet101(num_classes=100)
     y = net(torch.randn(2,3,32,32))
     print(y.size())
 
-demo()
+# demo()
 
 def demoGC():
     gcBlock = ContextBlock2d(channel=64)

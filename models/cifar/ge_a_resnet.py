@@ -22,9 +22,10 @@ __all__ = ['resnet18', 'resnet34', 'resnet50', 'resnet101', 'resnet152']
 class GE_A_Block(nn.Module):
     def __init__(self):
         super(GE_A_Block, self).__init__()
-        self.
+
 
     def forward(self, x):
+        return x
 
 
 

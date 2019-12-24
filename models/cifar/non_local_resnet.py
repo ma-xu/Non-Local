@@ -73,18 +73,18 @@ class NonLocalBlock2D(nn.Module):
         batch_size = x.size(0)
 
         g_x = self.g(x).view(batch_size, self.inter_channels, -1)
-        g_x = g_x.permute(0, 2, 1)
+        g_x = g_x.permute(0, 2, 1) #[b,w/2*h/2,in_c]
 
         theta_x = self.theta(x).view(batch_size, self.inter_channels, -1)
-        theta_x = theta_x.permute(0, 2, 1)
-        phi_x = self.phi(x).view(batch_size, self.inter_channels, -1)
-        f = torch.matmul(theta_x, phi_x)
-        f_div_C = F.softmax(f, dim=-1)
+        theta_x = theta_x.permute(0, 2, 1) # [b,w*h,in_c]
+        phi_x = self.phi(x).view(batch_size, self.inter_channels, -1) # [b,in_c,w/2,h/2]
+        f = torch.matmul(theta_x, phi_x) # [b,w*h,w/2*h/2]
+        f_div_C = F.softmax(f, dim=-1) #[b,w*h,w/2*h/2]
 
-        y = torch.matmul(f_div_C, g_x)
-        y = y.permute(0, 2, 1).contiguous()
-        y = y.view(batch_size, self.inter_channels, *x.size()[2:])
-        W_y = self.W(y)
+        y = torch.matmul(f_div_C, g_x) # [b,w*h,in_c]
+        y = y.permute(0, 2, 1).contiguous() # [b,in_c,w*h]
+        y = y.view(batch_size, self.inter_channels, *x.size()[2:]) # [b,in_c,w,h]
+        W_y = self.W(y) # [b,in_c,w,h]
         z = W_y + x
 
         return z
@@ -304,4 +304,4 @@ def demo():
     y = net(torch.randn(2,3,32,32))
     print(y.size())
 
-# demo()
+demo()
